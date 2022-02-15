@@ -3,6 +3,7 @@ import logging
 from django.contrib.gis.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.contrib.postgres.indexes import GinIndex
 
 from search_service.models import (
         BaseSearchResource, 
@@ -28,6 +29,7 @@ class TextResource(BaseSearchResource):
     text_content = models.TextField(blank=True, null=True)  # Content
     selector = models.JSONField(blank=True, null=True)
     language = models.CharField(max_length=10, blank=True, null=True)
+    creator = models.JSONField(blank=True, null=True)  # JSON blob for authors etc
 
     class Meta:
         indexes = [
@@ -38,4 +40,8 @@ class TextResource(BaseSearchResource):
                 models.Index(fields=["text_subtitle"]),
                 models.Index(fields=["label"]),
                 models.Index(fields=["language"]),
+                GinIndex(fields=["label"]),
+                GinIndex(fields=["text_title"]),
+                GinIndex(fields=["text_subtitle"]),
+                GinIndex(fields=["creator"]),
         ]
