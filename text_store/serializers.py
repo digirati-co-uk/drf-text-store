@@ -1,7 +1,7 @@
 import logging
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
-from django.contrib.contenttypes.models import ContentType
+# from rest_framework.validators import UniqueValidator
+# from django.contrib.contenttypes.models import ContentType
 from bs4 import BeautifulSoup
 import bleach
 from django.utils.translation import get_language
@@ -63,39 +63,6 @@ class TextResourceSummarySerializer(serializers.HyperlinkedModelSerializer):
                 "lookup_field": "id",
             }
         }
-
-
-class LanguageMapToIndexablesSerializer(BaseModelToIndexableSerializer):
-    """
-    Sample:
-
-    ```
-    {
-      "label": {
-        "en": [
-          "Whistler's Mother",
-          "Arrangement in Grey and Black No. 1: The Artist's Mother"
-        ],
-        "fr": [
-          "Arrangement en gris et noir no 1",
-          "Portrait de la mère de l'artiste",
-          "La Mère de Whistler"
-        ],
-        "none": [ "Whistler (1871)" ]
-      }
-    }
-    ```
-    Output:
-
-    [
-        {
-        "type": ?, "subtype": "label". "original_content":
-        }
-    ]
-    """
-
-    def to_indexables(self, instance):
-        return []
 
 
 class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
