@@ -27,10 +27,7 @@ class TextResource(BaseSearchResource):
     # Assumption here that this is plaintext, markdown or HTML ?
     text_content = models.TextField(blank=True, null=True)  # Content
     selector = models.JSONField(blank=True, null=True)
-    language_iso639_2 = models.CharField(max_length=3, blank=True, null=True)
-    language_iso639_1 = models.CharField(max_length=2, blank=True, null=True)
-    language_display = models.CharField(max_length=64, blank=True, null=True)
-    language_pg = models.CharField(max_length=64, blank=True, null=True)
+    language = models.CharField(max_length=10, blank=True, null=True)
 
     class Meta:
         indexes = [
@@ -40,5 +37,5 @@ class TextResource(BaseSearchResource):
                 models.Index(fields=["text_title"]),
                 models.Index(fields=["text_subtitle"]),
                 models.Index(fields=["label"]),
-                models.Index(fields=["language_iso639_2", "language_iso639_1", "language_display"]),
+                models.Index(fields=["language"]),
         ]

@@ -31,10 +31,7 @@ class TextResourceCreateSerializer(serializers.ModelSerializer):
             "text_subtitle",
             "text_content",
             "selector",
-            "language_iso639_2",
-            "language_iso639_1",
-            "language_pg",
-            "language_display"
+            "language"
         ]
 
 
@@ -105,9 +102,6 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
                 "subtype": instance.text_type,
                 "original_content": bleach.clean(instance.text_content),
                 "indexable_text": BeautifulSoup(instance.text_content, "html.parser").text,
-                "language_iso639_2": instance.language_iso639_2,
-                "language_iso639_1": instance.language_iso639_1,
-                "language_display": instance.language_display,
-                "language_pg": instance.language_pg,
+                "language": instance.language,
             }
         ]
