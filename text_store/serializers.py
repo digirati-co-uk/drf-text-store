@@ -31,7 +31,8 @@ class TextResourceCreateSerializer(serializers.ModelSerializer):
             "text_subtitle",
             "text_content",
             "selector",
-            "language"
+            "language",
+            "creator"
         ]
 
 
