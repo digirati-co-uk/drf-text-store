@@ -11,6 +11,7 @@ from search_service.serializers import (
 )
 
 from search_service.models import ResourceRelationship
+import dateutil
 
 from .models import (
     TextResource,
@@ -63,6 +64,52 @@ class TextResourceSummarySerializer(serializers.HyperlinkedModelSerializer):
                 "lookup_field": "id",
             }
         }
+
+
+class CreatorToIndexableSerializer(BaseModelToIndexableSerializer):
+    def _date_indexable(
+        self,
+        type,
+        subtype,
+        value,
+    ):
+        try:
+            parsed_date = dateutil.parser.parse(value)
+        except ValueError:
+            parsed_date = None
+        if parsed_date:
+            return {
+                "type": type,
+                "subtype": subtype.lower(),
+                "indexable_date_range_start": parsed_date,
+                "indexable_date_range_end": parsed_date,
+                "original_content": str({subtype: bleach.clean(value)}),
+            }
+
+    def to_indexables(self, instance):
+        indexables = []
+        if authors := instance.get("authors"):
+            for author in authors:
+                # forename_initials = [x[0] if i > 0 else x for i, x in enumerate(author.get("forenames"))]
+                name = ", ".join([author.get("surname"), " ".join(author.get("forenames"))])
+                logger.info(name)
+                indexables.append(
+                    {
+                        "type": "text",
+                        "subtype": "author",
+                        "indexable_text": BeautifulSoup(name, "html.parser").text,
+                        "original_content": str({"author": bleach.clean(name)}),
+                        "language": None,
+                    }
+                )
+        # if creation_date := instance.get("date_string"):
+        #     indexables.append(self._date_indexable(
+        #                             type="text",
+        #                             subtype="creation_date",
+        #                             value=creation_date,
+        #                         ))
+        # logger.info(indexables)
+        return indexables
 
 
 class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
@@ -141,4 +188,6 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
                     indexables.extend(
                         self._indexables_from_field(field_instance, **field_lookup)
                     )
+        if creator := getattr(instance, "creator"):
+            indexables.extend(CreatorToIndexableSerializer().to_indexables(instance=creator))
         return indexables
