@@ -70,7 +70,8 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_filters",
     "rest_framework",
-    "text_store",
+    # "text_store",
+    "search_service",
     "text_store",
 ]
 
