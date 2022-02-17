@@ -38,7 +38,7 @@ class TextResourceCreateSerializer(serializers.ModelSerializer):
             "selector",
             "source_language",
             "target_language",
-            "creator",
+            "people",
         ]
 
 
@@ -77,6 +77,14 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
     ]
 
     def _person_indexable(self, type, subtype, value, language,):
+        """
+        Placeholder at the moment.
+        :param type:
+        :param subtype:
+        :param value:
+        :param language:
+        :return:
+        """
         return {
             "type": type,
             "subtype": subtype.lower(),
@@ -174,3 +182,14 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
                         self._indexables_from_field(field_instance, **field_lookup)
                     )
         return indexables
+
+
+class TextSearchSerializer(serializers.ModelSerializer):
+    rank = serializers.FloatField(
+        read_only=True
+    )  # Not this isn't ranking the highest (yet)
+    snippet = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = TextResource
+        fields = ["id", "created", "modified", "label", "text_title", "text_subtitle", "rank", "snippet"]

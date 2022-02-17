@@ -2,18 +2,15 @@ import logging
 
 # Django Imports
 from rest_framework import viewsets
-from rest_framework.decorators import action
-
-from rest_framework.response import Response
+from search_service.views import JSONResourceSearchViewSet
 
 # Local imports
 from .models import TextResource
 from .serializers import (
     TextResourceCreateSerializer,
-    TextSerializer,
     TextResourceSummarySerializer,
+    TextSearchSerializer
 )
-
 # This should be replaced by an import from a utils package.
 from .utils import (
     ActionBasedSerializerMixin,
@@ -40,4 +37,9 @@ class TextResourcePublicViewSet(ActionBasedSerializerMixin, viewsets.ReadOnlyMod
         "create": TextResourceCreateSerializer,
         "list": TextResourceSummarySerializer,
     }
-    # serializer_class = TextResourceCreateSerializer
+
+
+class TextResourceSearchViewSet(JSONResourceSearchViewSet):
+    """ """
+    queryset = TextResource.objects.all().distinct()
+    serializer_class = TextSearchSerializer

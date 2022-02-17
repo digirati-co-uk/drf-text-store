@@ -5,6 +5,8 @@ services:
     build:
       context: ../
       dockerfile: ./example_project/Dockerfile
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
     depends_on:
       - postgres
     links:
@@ -13,9 +15,6 @@ services:
       - test_env
     ports:
       - 8000:8000
-    environment:
-      - GITHUB_TOKEN=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
-
 
   postgres:
     hostname: postgres
