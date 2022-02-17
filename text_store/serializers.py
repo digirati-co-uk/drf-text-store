@@ -1,5 +1,6 @@
 import logging
 from rest_framework import serializers
+
 # from rest_framework.validators import UniqueValidator
 # from django.contrib.contenttypes.models import ContentType
 from bs4 import BeautifulSoup
@@ -35,8 +36,9 @@ class TextResourceCreateSerializer(serializers.ModelSerializer):
             "text_subtitle",
             "text_content",
             "selector",
-            "language",
-            "creator"
+            "source_language",
+            "target_language",
+            "creator",
         ]
 
 
@@ -66,58 +68,33 @@ class TextResourceSummarySerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
-class CreatorToIndexableSerializer(BaseModelToIndexableSerializer):
-    def _date_indexable(
-        self,
-        type,
-        subtype,
-        value,
-    ):
-        try:
-            parsed_date = dateutil.parser.parse(value)
-        except ValueError:
-            parsed_date = None
-        if parsed_date:
-            return {
-                "type": type,
-                "subtype": subtype.lower(),
-                "indexable_date_range_start": parsed_date,
-                "indexable_date_range_end": parsed_date,
-                "original_content": str({subtype: bleach.clean(value)}),
-            }
-
-    def to_indexables(self, instance):
-        indexables = []
-        if authors := instance.get("authors"):
-            for author in authors:
-                # forename_initials = [x[0] if i > 0 else x for i, x in enumerate(author.get("forenames"))]
-                name = ", ".join([author.get("surname"), " ".join(author.get("forenames"))])
-                logger.info(name)
-                indexables.append(
-                    {
-                        "type": "text",
-                        "subtype": "author",
-                        "indexable_text": BeautifulSoup(name, "html.parser").text,
-                        "original_content": str({"author": bleach.clean(name)}),
-                        "language": None,
-                    }
-                )
-        # if creation_date := instance.get("date_string"):
-        #     indexables.append(self._date_indexable(
-        #                             type="text",
-        #                             subtype="creation_date",
-        #                             value=creation_date,
-        #                         ))
-        # logger.info(indexables)
-        return indexables
-
-
 class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
     indexable_text_fields = [
         {"key": "label", "indexable_type": "text", "index_as": "text"},
         {"key": "text_title", "indexable_type": "text", "index_as": "text"},
         {"key": "text_subtitle", "indexable_type": "text", "index_as": "text"},
+        # {"key": "people", "indexable_type": "text", "index_as": "person"},
     ]
+
+    def _person_indexable(self, type, subtype, value, language,):
+        return {
+            "type": type,
+            "subtype": subtype.lower(),
+            "indexable_text": BeautifulSoup(
+                ", ".join([value.get("surname"), " ".join(value.get("forenames"))]),
+                "html.parser",
+            ).text,
+            "original_content": str(
+                {
+                    "creator": bleach.clean(
+                        ", ".join(
+                            [value.get("surname"), " ".join(value.get("forenames"))]
+                        )
+                    )
+                }
+            ),
+            "language": language,
+        }
 
     def _text_indexable(
         self,
@@ -172,13 +149,21 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
         return indexables
 
     def to_indexables(self, instance):
+        if hasattr(instance, "target_language"):
+            text_language = instance.target_language
+        elif hasattr(instance, "source_language"):
+            text_language = instance.source_language
+        else:
+            text_language = None
         indexables = [
             {
                 "type": "text",
                 "subtype": instance.text_type,
                 "original_content": bleach.clean(instance.text_content),
-                "indexable_text": BeautifulSoup(instance.text_content, "html.parser").text,
-                "language": instance.language,
+                "indexable_text": BeautifulSoup(
+                    instance.text_content, "html.parser"
+                ).text,
+                "language": text_language,
             },
         ]
         for field_lookup in self.indexable_text_fields:
@@ -188,6 +173,4 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
                     indexables.extend(
                         self._indexables_from_field(field_instance, **field_lookup)
                     )
-        if creator := getattr(instance, "creator"):
-            indexables.extend(CreatorToIndexableSerializer().to_indexables(instance=creator))
         return indexables

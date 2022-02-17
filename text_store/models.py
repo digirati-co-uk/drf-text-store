@@ -28,8 +28,9 @@ class TextResource(BaseSearchResource):
     # Assumption here that this is plaintext, markdown or HTML ?
     text_content = models.TextField(blank=True, null=True)  # Content
     selector = models.JSONField(blank=True, null=True)
-    language = models.CharField(max_length=10, blank=True, null=True)
-    creator = models.JSONField(blank=True, null=True)  # JSON blob for authors etc
+    source_language = models.CharField(max_length=10, blank=True, null=True)
+    target_language = models.CharField(max_length=10, blank=True, null=True)
+    people = models.JSONField(blank=True, null=True)  # JSON blob for authors etc
 
     class Meta:
         indexes = [
@@ -39,9 +40,10 @@ class TextResource(BaseSearchResource):
                 models.Index(fields=["text_title"]),
                 models.Index(fields=["text_subtitle"]),
                 models.Index(fields=["label"]),
-                models.Index(fields=["language"]),
+                models.Index(fields=["source_language"]),
+                models.Index(fields=["target_language"]),
                 GinIndex(fields=["label"]),
                 GinIndex(fields=["text_title"]),
                 GinIndex(fields=["text_subtitle"]),
-                GinIndex(fields=["creator"]),
+                GinIndex(fields=["people"]),
         ]
