@@ -193,9 +193,9 @@ def test_translation_query_with_resource_filter(http_service):
         json=post_json,
         headers=headers,
     )
-    # response_json = result.json()
-    assert result.status_code != requests.codes.ok
-    # assert response_json["pagination"]["totalResults"] == 0
-    # assert "<b>mirror</b>" in response_json["results"][0].get(
-    #     "snippet", None
-    # )
+    response_json = result.json()
+    assert result.status_code == requests.codes.ok
+    assert response_json["pagination"]["totalResults"] == 1
+    assert "<b>mirror</b>" in response_json["results"][0].get(
+        "snippet", None
+    )
