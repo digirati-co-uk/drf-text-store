@@ -199,3 +199,24 @@ def test_translation_query_with_resource_filter(http_service):
     assert "<b>mirror</b>" in response_json["results"][0].get(
         "snippet", None
     )
+
+
+def test_translation_query_with_resource_filter_fail(http_service):
+    test_endpoint = "text_search"
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    post_json = {"fulltext": "mirror",
+                 "resource_filters": [
+                    {
+                        "value": "application/json+ld",
+                        "field": "text_format",
+                        "operator": "exact",
+                        "resource_class": "textresource",
+                    }]}
+    result = requests.post(
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        json=post_json,
+        headers=headers,
+    )
+    response_json = result.json()
+    assert result.status_code == requests.codes.ok
+    assert response_json["pagination"]["totalResults"] == 0
