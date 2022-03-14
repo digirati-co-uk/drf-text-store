@@ -145,7 +145,7 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
             lang = self._normalise_language(val_lang)
             if vals:
                 for str_value in map(str, vals):
-                    if index_as == "text":
+                    if index_as == "text" and str_value.strip():
                         indexables.append(
                             self._text_indexable(
                                 type=indexable_type,

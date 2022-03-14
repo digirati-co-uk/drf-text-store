@@ -220,3 +220,44 @@ def test_translation_query_with_resource_filter_fail(http_service):
     response_json = result.json()
     assert result.status_code == requests.codes.ok
     assert response_json["pagination"]["totalResults"] == 0
+
+
+def test_text_resource_blank_fields(http_service):
+    test_endpoint = "text"
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    post_json = {
+        "text_type": "transcript",
+        "text_content": "El facóquero común o facocero común",
+        "text_format": "text/plain",
+        "source_language": "spanish",
+        "target_language": "english",
+        "text_title": "  ",
+        "text_subtitle": "  ",
+        "label": {
+                "en": ["Common warthog"],
+                "es": ["El facóquero común"],
+            },
+    }
+    result = requests.post(
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        json=post_json,
+        headers=headers,
+    )
+    assert result.status_code == 201
+
+
+def test_text_resource_blank_fields_indexing(http_service):
+    test_endpoint = "text_search"
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    post_json = {"fulltext": "facocero"}
+    result = requests.post(
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        json=post_json,
+        headers=headers,
+    )
+    response_json = result.json()
+    assert result.status_code == requests.codes.ok
+    assert response_json["pagination"]["totalResults"] == 1
+    assert response_json["results"][0]["label"]["en"] == ['Common warthog']
+
+
