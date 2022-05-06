@@ -1,11 +1,11 @@
 from rest_framework import routers
-from ..views import (
-    TextResourceViewSet, TextResourceSearchViewSet
-)
+from ..views import TextResourceAPIViewSet, TextResourceAPISearchViewSet
 
 app_name = "text_store"
 
-router = routers.DefaultRouter(trailing_slash=False)
-router.register("text", TextResourceViewSet)
-router.register("text_search", TextResourceSearchViewSet, basename="text_search")
+router = routers.DefaultRouter()
+router.register("text_resource", TextResourceAPIViewSet)
+router.register(
+    "text_resource_search", TextResourceAPISearchViewSet, basename="search"
+)
 urlpatterns = router.urls
