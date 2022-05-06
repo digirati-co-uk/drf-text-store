@@ -314,8 +314,8 @@ requests = "^2.27.1"
 [package.source]
 type = "git"
 url = "https://github.com/digirati-co-uk/drf-search-service.git"
-reference = "feature/GET_search_classes"
-resolved_reference = "96d7d439e739a0b01a9b3f4ea6c5b03380a02b6f"
+reference = "develop"
+resolved_reference = "e7da8c36e9b99287d8c1f3787b5935fd995977f9"
 
 [[package]]
 name = "idna"
@@ -645,7 +645,7 @@ six = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "1bbb1bd3a583789ae307c38f09ff2d33dd7c430bb3f525b170665123cc16a8aa"
+content-hash = "38136ffc4f2aa1d489b7278becf49159fab9ca1247ed5f4ac1ebe23fa6f69afb"
 
 [metadata.files]
 asgiref = [
