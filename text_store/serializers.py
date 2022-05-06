@@ -7,12 +7,11 @@ from bs4 import BeautifulSoup
 import bleach
 from django.utils.translation import get_language
 
-from search_service.serializers import (
-    BaseModelToIndexableSerializer,
-)
+from search_service.serializers.indexing import BaseModelToIndexableSerializer
+from search_service.serializers.search import BaseRankSnippetSearchSerializer
+
 
 from search_service.models import ResourceRelationship
-import dateutil
 
 from .models import (
     TextResource,
@@ -23,7 +22,7 @@ logger = logging.getLogger(__name__)
 default_lang = get_language()
 
 
-class TextResourceCreateSerializer(serializers.ModelSerializer):
+class TextResourceAPICreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextResource
         fields = [
@@ -42,7 +41,7 @@ class TextResourceCreateSerializer(serializers.ModelSerializer):
         ]
 
 
-class TextSerializer(serializers.ModelSerializer):
+class TextResourceAPIDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return instance.text_content
 
@@ -51,7 +50,7 @@ class TextSerializer(serializers.ModelSerializer):
         fields = ["text_content"]
 
 
-class TextResourceSummarySerializer(serializers.HyperlinkedModelSerializer):
+class TextResourceAPIListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = TextResource
         fields = [
@@ -62,7 +61,75 @@ class TextResourceSummarySerializer(serializers.HyperlinkedModelSerializer):
         ]
         extra_kwargs = {
             "url": {
-                "view_name": "text_store:textresource-detail",
+                "view_name": "api:text_store:textresource-detail",
+                "lookup_field": "id",
+            }
+        }
+
+
+class TextResourceAPISearchSerializer(BaseRankSnippetSearchSerializer):
+    class Meta:
+        model = TextResource
+        fields = [
+            "id",
+            "created",
+            "modified",
+            "label",
+            "text_title",
+            "text_subtitle",
+            "rank",
+            "snippet",
+        ]
+        extra_kwargs = {
+            "url": {
+                "view_name": "api:text_store:textresource-detail",
+                "lookup_field": "id",
+            }
+        }
+
+
+class TextResourcePublicListSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = TextResource
+        fields = [
+            "url",
+            "label",
+            "text_title",
+            "text_subtitle",
+        ]
+        extra_kwargs = {
+            "url": {
+                "view_name": "api:text_store:textresource-detail",
+                "lookup_field": "id",
+            }
+        }
+
+
+class TextResourcePublicDetailSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        return instance.text_content
+
+    class Meta:
+        model = TextResource
+        fields = ["text_content"]
+
+
+class TextResourcePublicSearchSerializer(BaseRankSnippetSearchSerializer):
+    class Meta:
+        model = TextResource
+        fields = [
+            "id",
+            "created",
+            "modified",
+            "label",
+            "text_title",
+            "text_subtitle",
+            "rank",
+            "snippet",
+        ]
+        extra_kwargs = {
+            "url": {
+                "view_name": "api:text_store:textresource-detail",
                 "lookup_field": "id",
             }
         }
@@ -76,7 +143,13 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
         # {"key": "people", "indexable_type": "text", "index_as": "person"},
     ]
 
-    def _person_indexable(self, type, subtype, value, language,):
+    def _person_indexable(
+        self,
+        type,
+        subtype,
+        value,
+        language,
+    ):
         """
         Placeholder at the moment.
         :param type:
@@ -182,14 +255,3 @@ class TextResourceToIndexableSerializer(BaseModelToIndexableSerializer):
                         self._indexables_from_field(field_instance, **field_lookup)
                     )
         return indexables
-
-
-class TextSearchSerializer(serializers.ModelSerializer):
-    rank = serializers.FloatField(
-        read_only=True
-    )  # Not this isn't ranking the highest (yet)
-    snippet = serializers.CharField(read_only=True)
-
-    class Meta:
-        model = TextResource
-        fields = ["id", "created", "modified", "label", "text_title", "text_subtitle", "rank", "snippet"]
