@@ -14,7 +14,7 @@ python = "^3.8"
 Django = "4.0.2"
 djangorestframework = "^3.13.1"
 django-model-utils = "^4.2.0"
-drf-search-service = {git = "https://github.com/digirati-co-uk/drf-search-service.git", rev = "develop"}
+drf-search-service = {git = "https://github.com/digirati-co-uk/drf-search-service", rev = "0.1"}
 django-environ = "^0.9.0"
 
 [tool.poetry.dev-dependencies]

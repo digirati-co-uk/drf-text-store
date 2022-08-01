@@ -302,6 +302,7 @@ develop = false
 beautifulsoup4 = "^4.10.0"
 bleach = "^4.1.0"
 Django = "^4.0.1"
+django-environ = "^0.9.0"
 django-extensions = "^3.1.5"
 django-filter = "^21.1"
 django-model-utils = "^4.2.0"
@@ -313,9 +314,9 @@ requests = "^2.27.1"
 
 [package.source]
 type = "git"
-url = "https://github.com/digirati-co-uk/drf-search-service.git"
-reference = "develop"
-resolved_reference = "e7da8c36e9b99287d8c1f3787b5935fd995977f9"
+url = "https://github.com/digirati-co-uk/drf-search-service"
+reference = "0.1"
+resolved_reference = "842c11aab3da0429ec2db2b69d16290260baefe8"
 
 [[package]]
 name = "idna"
@@ -645,7 +646,7 @@ six = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bad0413468bbc89724bcfdf4d4603eeff8613552cdb3d64964d9dee01e3b23de"
+content-hash = "e787574c9174b2990eb774b0f122cf3b325b44b7be71c643f315481af8feafbb"
 
 [metadata.files]
 asgiref = [
