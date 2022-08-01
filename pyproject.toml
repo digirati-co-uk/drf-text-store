@@ -11,7 +11,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-Django = "4.0.2"
+Django = "4.0.6"
 djangorestframework = "^3.13.1"
 django-model-utils = "^4.2.0"
 drf-search-service = {git = "https://github.com/digirati-co-uk/drf-search-service", rev = "0.1"}
