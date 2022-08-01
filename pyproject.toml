@@ -3,7 +3,7 @@ name = "drf-text-store"
 version = "0.1.0"
 description = "Django REST Framework Text Store"
 license = "MIT"
-authors = ["Matt McGrattan <matt.mcgrattan@digirati.com", "Finlay McCourt <finlay.mccourt@digirati.com>"]
+authors = ["Matt McGrattan <matt.mcgrattan@digirati.com>", "Finlay McCourt <finlay.mccourt@digirati.com>"]
 readme = "README.md"
 packages = [
     { include = "text_store" },
@@ -14,6 +14,8 @@ python = "^3.8"
 Django = "4.0.2"
 djangorestframework = "^3.13.1"
 django-model-utils = "^4.2.0"
+drf-search-service = {git = "https://github.com/digirati-co-uk/drf-search-service", rev = "0.1"}
+django-environ = "^0.9.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

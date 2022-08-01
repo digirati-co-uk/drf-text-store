@@ -9,7 +9,7 @@ test_headers = {"Content-Type": "application/json", "Accept": "application/json"
 
 
 def test_single_text(http_service):
-    test_endpoint = "text"
+    test_endpoint = "text_resource"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {
         "text_type": "transcript",
@@ -23,7 +23,7 @@ def test_single_text(http_service):
             },
     }
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -31,11 +31,11 @@ def test_single_text(http_service):
 
 
 def test_simple_fulltext_query(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "hello"}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -46,7 +46,7 @@ def test_simple_fulltext_query(http_service):
 
 
 def test_transcript(http_service):
-    test_endpoint = "text"
+    test_endpoint = "text_resource"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {
         "text_type": "translation",
@@ -82,7 +82,7 @@ def test_transcript(http_service):
             },
     }
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -90,11 +90,11 @@ def test_transcript(http_service):
 
 
 def test_translation_query(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "turkey blood"}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -108,13 +108,13 @@ def test_translation_query(http_service):
 
 
 def test_translation_query_with_facet(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "mirror",
                  "facets": [{"type": "text", "subtype": "label", "value": "traducción al náhuatl",
                              "language_display": "spanish"}]}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -127,13 +127,13 @@ def test_translation_query_with_facet(http_service):
 
 
 def test_translation_query_with_facet_fail(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "mirror",
                  "facets": [{"type": "text", "subtype": "label", "value": "rhubarb",
                              "language_display": "english"}]}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -143,13 +143,13 @@ def test_translation_query_with_facet_fail(http_service):
 
 
 def test_translation_query_with_text_fail(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "rhubarb",
                  "facets": [{"type": "text", "subtype": "label", "value": "traducción al náhuatl",
                              "language_display": "spanish"}]}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -159,13 +159,13 @@ def test_translation_query_with_text_fail(http_service):
 
 
 def test_translation_query_with_facet_different_language(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "mirror",
                  "facets": [{"type": "text", "subtype": "label", "value": "nahuatl translation",
                              "language_display": "english"}]}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -178,7 +178,7 @@ def test_translation_query_with_facet_different_language(http_service):
 
 
 def test_translation_query_with_resource_filter(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "mirror",
                  "resource_filters": [
@@ -189,7 +189,7 @@ def test_translation_query_with_resource_filter(http_service):
                         "resource_class": "textresource",
                     }]}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
@@ -202,7 +202,7 @@ def test_translation_query_with_resource_filter(http_service):
 
 
 def test_translation_query_with_resource_filter_fail(http_service):
-    test_endpoint = "text_search"
+    test_endpoint = "text_resource_search"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     post_json = {"fulltext": "mirror",
                  "resource_filters": [
@@ -213,10 +213,51 @@ def test_translation_query_with_resource_filter_fail(http_service):
                         "resource_class": "textresource",
                     }]}
     result = requests.post(
-        url=f"{http_service}/{app_endpoint}/{test_endpoint}",
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
         json=post_json,
         headers=headers,
     )
     response_json = result.json()
     assert result.status_code == requests.codes.ok
     assert response_json["pagination"]["totalResults"] == 0
+
+
+def test_text_resource_blank_fields(http_service):
+    test_endpoint = "text_resource"
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    post_json = {
+        "text_type": "transcript",
+        "text_content": "El facóquero común o facocero común",
+        "text_format": "text/plain",
+        "source_language": "spanish",
+        "target_language": "english",
+        "text_title": "  ",
+        "text_subtitle": "  ",
+        "label": {
+                "en": ["Common warthog"],
+                "es": ["El facóquero común"],
+            },
+    }
+    result = requests.post(
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
+        json=post_json,
+        headers=headers,
+    )
+    assert result.status_code == 201
+
+
+def test_text_resource_blank_fields_indexing(http_service):
+    test_endpoint = "text_resource_search"
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    post_json = {"fulltext": "facocero"}
+    result = requests.post(
+        url=f"{http_service}/{app_endpoint}/{test_endpoint}/",
+        json=post_json,
+        headers=headers,
+    )
+    response_json = result.json()
+    assert result.status_code == requests.codes.ok
+    assert response_json["pagination"]["totalResults"] == 1
+    assert response_json["results"][0]["label"]["en"] == ['Common warthog']
+
+
